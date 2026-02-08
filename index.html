@@ -23,11 +23,18 @@
     .bg {
       position: absolute;
       inset: 0;
+      opacity: 0;
+      transition: opacity 1.2s ease;
       background:
         linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
-        url("./background.jpg") center / contain no-repeat;
+        url("./background.jpeg") center / contain no-repeat;
       animation: floatBg 40s ease-in-out infinite;
       filter: blur(1px);
+      pointer-events: none;
+    }
+
+    .bg.show {
+      opacity: 1;
     }
 
     @keyframes floatBg {
@@ -55,10 +62,16 @@
       text-shadow: 0 4px 15px rgba(0,0,0,0.8);
     }
 
+    .hint {
+      font-size: 0.95rem;
+      opacity: 0.7;
+      margin-top: 10px;
+    }
+
     .buttons {
-      display: flex;
+      display: none;
       gap: 20px;
-      position: relative;
+      margin-top: 10px;
     }
 
     button {
@@ -76,51 +89,56 @@
       transform: scale(1.08);
     }
 
-    .yes {
-      background: #ff4d6d;
-    }
-
-    .no {
-      background: #6c757d;
-      position: relative;
-    }
+    .yes { background: #ff4d6d; }
+    .no  { background: #6c757d; position: relative; }
 
     .message {
       display: none;
-      margin-top: 25px;
-      font-size: 1.5rem;
-      animation: fadeIn 0.8s ease forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      margin-top: 20px;
+      font-size: 1.4rem;
+      animation: fadeIn 0.6s ease forwards;
     }
 
     .options {
       display: none;
       margin-top: 25px;
       font-size: 1.3rem;
+      animation: fadeIn 0.8s ease forwards;
     }
 
-    /* Floating hearts */
+    .option {
+      margin-top: 12px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .option:hover {
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Hearts */
     .heart {
       position: absolute;
       bottom: -20px;
-      font-size: 20px;
+      font-size: 22px;
       animation: floatUp 4s linear forwards;
       color: #ff4d6d;
     }
 
     @keyframes floatUp {
       from { transform: translateY(0); opacity: 1; }
-      to { transform: translateY(-100vh); opacity: 0; }
+      to   { transform: translateY(-100vh); opacity: 0; }
     }
   </style>
 </head>
-<body onclick="startMusic()">
+<body onclick="advanceStory(); startMusic();">
 
-  <div class="bg"></div>
+  <div class="bg" id="bg"></div>
 
   <audio id="music" loop>
     <source src="music.mp3" type="audio/mpeg">
@@ -128,8 +146,9 @@
 
   <div class="content">
     <h1 id="title">Hey… I’ve been wanting to ask you something ❤️</h1>
+    <div class="hint" id="hint">tap anywhere 👆</div>
 
-    <div class="buttons" id="buttons" style="display:none;">
+    <div class="buttons" id="buttons">
       <button class="yes" onclick="yesClicked()">YES 💖</button>
       <button class="no" id="noBtn" onclick="noClicked()">NO 🙃</button>
     </div>
@@ -138,11 +157,18 @@
 
     <div class="options" id="options">
       <p>So… our Valentine plan? 🥹</p>
-      <p>🍽 Dinner &nbsp; 🎬 Movie &nbsp; 🍦 Long walk</p>
+
+      <div class="option" onclick="selectOption('Dinner')">🍽 Dinner</div>
+      <div class="option" onclick="selectOption('Movie')">🎬 Movie</div>
+      <div class="option" onclick="selectOption('Long walk')">🍦 Long walk</div>
+      <div class="option" onclick="selectOption('All of the above')">
+        <strong>All of the above 🥹🍽🎬🍦💖</strong>
+      </div>
     </div>
   </div>
 
   <script>
+    let revealed = false;
     let musicStarted = false;
 
     function startMusic() {
@@ -152,25 +178,21 @@
       }
     }
 
-    // Suspense text
-    setTimeout(() => {
-      document.getElementById("title").innerText = "Something a little important…";
-    }, 2500);
-
-    setTimeout(() => {
-      document.getElementById("title").innerText = "Will you be my Valentine? 💘";
-      document.getElementById("buttons").style.display = "flex";
-    }, 5000);
+    function advanceStory() {
+      if (!revealed) {
+        revealed = true;
+        document.getElementById("title").innerText = "Will you be my Valentine? 💘";
+        document.getElementById("bg").classList.add("show");
+        document.getElementById("buttons").style.display = "flex";
+        document.getElementById("hint").style.display = "none";
+      }
+    }
 
     function yesClicked() {
+      document.getElementById("msg").style.display = "none";
       spawnHearts();
       document.getElementById("buttons").style.display = "none";
       document.getElementById("options").style.display = "block";
-
-      setTimeout(() => {
-        window.location.href =
-          "https://wa.me/919145842449?text=Yes%20🥹❤️%20I%20am%20your%20Valentine!";
-      }, 3500);
     }
 
     function noClicked() {
@@ -179,6 +201,16 @@
       msg.innerText = "Error: please select Yesss 🥺💦";
       moveNoButton();
       spawnHearts();
+    }
+
+    function selectOption(choice) {
+      spawnHearts();
+      setTimeout(() => {
+        window.location.href =
+          "https://wa.me/91XXXXXXXXXX?text=Valentine%20plan:%20" +
+          encodeURIComponent(choice) +
+          "%20🥹❤️";
+      }, 1200);
     }
 
     function moveNoButton() {
