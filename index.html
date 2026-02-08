@@ -133,10 +133,12 @@
     }
   </style>
 </head>
-<body onclick="advanceStory(); startMusic();">
+
+<body onclick="advanceStory();">
 
   <div class="bg" id="bg"></div>
 
+  <!-- 🎵 Music (starts ONLY on Valentine reveal) -->
   <audio id="music" loop>
     <source src="music.mp3" type="audio/mpeg">
   </audio>
@@ -164,7 +166,9 @@
 
     function startMusic() {
       if (!musicStarted) {
-        document.getElementById("music").play().catch(() => {});
+        const music = document.getElementById("music");
+        music.volume = 0.3;   // soft romantic volume
+        music.play().catch(() => {});
         musicStarted = true;
       }
     }
@@ -172,29 +176,29 @@
     function advanceStory() {
       if (!revealed) {
         revealed = true;
-        document.getElementById("title").innerText = "Will you be my Valentine? 💘";
+
+        document.getElementById("title").innerText =
+          "Will you be my Valentine? 💘";
         document.getElementById("bg").classList.add("show");
         document.getElementById("buttons").style.display = "flex";
         document.getElementById("hint").style.display = "none";
+
+        // 🎵 Start music exactly here
+        startMusic();
       }
     }
 
     function yesClicked() {
-      // Clean up any NO state
       document.getElementById("msg").style.display = "none";
-
-      // Transition UI
       document.getElementById("buttons").style.display = "none";
-      document.getElementById("title").innerText = "Sending this to him 💌";
+      document.getElementById("title").innerText = "Sending 💌";
 
       spawnHearts();
 
-      // Show Sent ❤️ screen
       setTimeout(() => {
         document.getElementById("sentScreen").style.display = "block";
       }, 800);
 
-      // Redirect to WhatsApp (prefilled message)
       setTimeout(() => {
         window.location.href =
           "https://wa.me/919145842449?text=" +
