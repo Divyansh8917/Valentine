@@ -99,21 +99,18 @@
       animation: fadeIn 0.6s ease forwards;
     }
 
-    .options {
+    .sent {
       display: none;
       margin-top: 25px;
-      font-size: 1.3rem;
+      font-size: 1.6rem;
       animation: fadeIn 0.8s ease forwards;
     }
 
-    .option {
-      margin-top: 12px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-
-    .option:hover {
-      transform: scale(1.05);
+    .sent small {
+      display: block;
+      margin-top: 10px;
+      font-size: 1.1rem;
+      opacity: 0.8;
     }
 
     @keyframes fadeIn {
@@ -121,7 +118,7 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* Hearts */
+    /* Floating hearts */
     .heart {
       position: absolute;
       bottom: -20px;
@@ -155,15 +152,9 @@
 
     <div class="message" id="msg"></div>
 
-    <div class="options" id="options">
-      <p>So… our Valentine plan? 🥹</p>
-
-      <div class="option" onclick="selectOption('Dinner')">🍽 Dinner</div>
-      <div class="option" onclick="selectOption('Movie')">🎬 Movie</div>
-      <div class="option" onclick="selectOption('Long walk')">🍦 Long walk</div>
-      <div class="option" onclick="selectOption('All of the above')">
-        <strong>All of the above 🥹🍽🎬🍦💖</strong>
-      </div>
+    <div class="sent" id="sentScreen">
+      Sent ❤️
+      <small>I can’t wait to see you 🥹💖</small>
     </div>
   </div>
 
@@ -189,10 +180,28 @@
     }
 
     function yesClicked() {
+      // Clean up any NO state
       document.getElementById("msg").style.display = "none";
-      spawnHearts();
+
+      // Transition UI
       document.getElementById("buttons").style.display = "none";
-      document.getElementById("options").style.display = "block";
+      document.getElementById("title").innerText = "Sending this to him 💌";
+
+      spawnHearts();
+
+      // Show Sent ❤️ screen
+      setTimeout(() => {
+        document.getElementById("sentScreen").style.display = "block";
+      }, 800);
+
+      // Redirect to WhatsApp (prefilled message)
+      setTimeout(() => {
+        window.location.href =
+          "https://wa.me/919145842449?text=" +
+          encodeURIComponent(
+            "Yes 🥹❤️ I love you ❤️❤️❤️ I am your Valentine ❤️"
+          );
+      }, 1500);
     }
 
     function noClicked() {
@@ -201,16 +210,6 @@
       msg.innerText = "Please select Yesss 🥺";
       moveNoButton();
       spawnHearts();
-    }
-
-    function selectOption(choice) {
-      spawnHearts();
-      setTimeout(() => {
-        window.location.href =
-          "https://wa.me/919145842449?text=Yes%20🥹❤️%20I%20Love%20You%20❤️❤️❤️%20I%20am%20your%20Valentine❤️❤️" +
-          encodeURIComponent(choice) +
-          "%20🥹❤️";
-      }, 1200);
     }
 
     function moveNoButton() {
