@@ -109,4 +109,96 @@
       bottom: -20px;
       font-size: 20px;
       animation: floatUp 4s linear forwards;
-      color:
+      color: #ff4d6d;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-100vh); opacity: 0; }
+    }
+  </style>
+</head>
+<body onclick="startMusic()">
+
+  <div class="bg"></div>
+
+  <audio id="music" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="content">
+    <h1 id="title">Hey… I’ve been wanting to ask you something ❤️</h1>
+
+    <div class="buttons" id="buttons" style="display:none;">
+      <button class="yes" onclick="yesClicked()">YES 💖</button>
+      <button class="no" id="noBtn" onclick="noClicked()">NO 🙃</button>
+    </div>
+
+    <div class="message" id="msg"></div>
+
+    <div class="options" id="options">
+      <p>So… our Valentine plan? 🥹</p>
+      <p>🍽 Dinner &nbsp; 🎬 Movie &nbsp; 🍦 Long walk</p>
+    </div>
+  </div>
+
+  <script>
+    let musicStarted = false;
+
+    function startMusic() {
+      if (!musicStarted) {
+        document.getElementById("music").play().catch(() => {});
+        musicStarted = true;
+      }
+    }
+
+    // Suspense text
+    setTimeout(() => {
+      document.getElementById("title").innerText = "Something a little important…";
+    }, 2500);
+
+    setTimeout(() => {
+      document.getElementById("title").innerText = "Will you be my Valentine? 💘";
+      document.getElementById("buttons").style.display = "flex";
+    }, 5000);
+
+    function yesClicked() {
+      spawnHearts();
+      document.getElementById("buttons").style.display = "none";
+      document.getElementById("options").style.display = "block";
+
+      setTimeout(() => {
+        window.location.href =
+          "https://wa.me/919145842449?text=Yes%20🥹❤️%20I%20am%20your%20Valentine!";
+      }, 3500);
+    }
+
+    function noClicked() {
+      const msg = document.getElementById("msg");
+      msg.style.display = "block";
+      msg.innerText = "Error: please select Yesss 🥺💦";
+      moveNoButton();
+      spawnHearts();
+    }
+
+    function moveNoButton() {
+      const btn = document.getElementById("noBtn");
+      const x = Math.random() * 120 - 60;
+      const y = Math.random() * 80 - 40;
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    function spawnHearts() {
+      for (let i = 0; i < 8; i++) {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerText = "❤️";
+        heart.style.left = Math.random() * 100 + "vw";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 4000);
+      }
+    }
+  </script>
+
+</body>
+</html>
