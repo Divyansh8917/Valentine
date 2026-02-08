@@ -54,21 +54,178 @@
 
     h1 {
       font-size: 2.3rem;
-      margin-bottom: 15px;
+      margin-bottom: 14px;
       font-family: 'Dancing Script', cursive;
       text-shadow: 0 4px 15px rgba(0,0,0,0.8);
     }
 
-    .subline {
+    .poetry {
+      display: none;
       font-size: 1rem;
       opacity: 0.85;
-      margin-bottom: 18px;
+      margin-bottom: 22px;
+      line-height: 1.4;
+      animation: fadeIn 1s ease forwards;
     }
 
-    .memory {
+    .hint {
       font-size: 0.95rem;
-      opacity: 0.75;
-      margin-bottom: 25px;
+      opacity: 0.6;
+      margin-top: 10px;
     }
 
-    .hint
+    .buttons {
+      display: none;
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    button {
+      padding: 14px 42px;
+      font-size: 1.2rem;
+      border-radius: 50px;
+      border: none;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+
+    .yes {
+      background: #ff4d6d;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .no {
+      background: #6c757d;
+      position: relative;
+    }
+
+    .message {
+      display: none;
+      margin-top: 18px;
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    .sent {
+      display: none;
+      margin-top: 30px;
+      font-size: 1.6rem;
+    }
+
+    .sent small {
+      display: block;
+      margin-top: 8px;
+      font-size: 1rem;
+      opacity: 0.8;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 18px;
+      font-size: 0.75rem;
+      opacity: 0.5;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body onclick="advanceStory()">
+
+  <div class="bg" id="bg"></div>
+
+  <div class="content">
+    <h1 id="title">Hey… I’ve been wanting to ask you something</h1>
+
+    <div class="poetry" id="poetry">
+      Not as a question of a day,<br/>
+      but as a feeling I’ve carried quietly.
+    </div>
+
+    <div class="hint" id="hint">Click please</div>
+
+    <div class="buttons" id="buttons">
+      <button class="yes" onclick="yesClicked()">YES 💖</button>
+      <button class="no" id="noBtn" onclick="noClicked()">NO 🙃</button>
+    </div>
+
+    <div class="message" id="msg"></div>
+
+    <div class="sent" id="sentScreen">
+      Sent ❤️
+      <small>I can’t wait to see you 🥹</small>
+    </div>
+
+    <div class="footer" id="footer"></div>
+  </div>
+
+  <script>
+    let revealed = false;
+    let noCount = 0;
+
+    function advanceStory() {
+      if (!revealed) {
+        revealed = true;
+
+        document.getElementById("title").innerText =
+          "Will you be my Valentine?";
+        document.getElementById("poetry").style.display = "block";
+        document.getElementById("bg").classList.add("show");
+        document.getElementById("buttons").style.display = "flex";
+        document.getElementById("hint").style.display = "none";
+      }
+    }
+
+    function yesClicked() {
+      document.getElementById("buttons").style.display = "none";
+      document.getElementById("msg").style.display = "none";
+      document.getElementById("title").innerText = "Sending 💌";
+
+      setTimeout(() => {
+        document.getElementById("sentScreen").style.display = "block";
+      }, 800);
+
+      setTimeout(() => {
+        window.location.href =
+          "https://wa.me/91XXXXXXXXXX?text=" +
+          encodeURIComponent("Yes 🥹❤️ I am your Valentine.");
+      }, 1500);
+    }
+
+    function noClicked() {
+      const msg = document.getElementById("msg");
+      msg.style.display = "block";
+
+      noCount++;
+      if (noCount === 1) msg.innerText = "Hey… don’t be like that 😭";
+      else if (noCount === 2) msg.innerText = "You know this already 😅";
+      else msg.innerText = "I’ll still be right here 💔";
+
+      moveNoButton();
+    }
+
+    function moveNoButton() {
+      const btn = document.getElementById("noBtn");
+      const x = Math.random() * 120 - 60;
+      const y = Math.random() * 80 - 40;
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    // Footer timestamp
+    const now = new Date();
+    document.getElementById("footer").innerText =
+      `Asked on ${now.toDateString()} • ${now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
+  </script>
+
+</body>
+</html>
